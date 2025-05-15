@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature PID Control</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Removed overflow: hidden to allow scrolling */
+        }
+
+        header {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 100%;
+            margin: 10px auto;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #0056b3;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            width: 95%;
+            margin: auto;
+            flex: 1;
+        }
+
+        input,
+        button {
+            font-size: 16px;
+            padding: 8px 12px;
+            margin: 5px;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover:not(:disabled) {
+            background: #218838;
+        }
+
+        input:disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        canvas {
+            margin-top: 20px;
+            width: 100% !important;
+            height: 30vh !important;
+        }
+
+        #metrics {
+            margin-top: 20px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        footer {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 95%;
+            max-width: 100%;
+            margin: 20px auto 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .setpoint-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            nav a {
+                margin: 5px;
+                font-size: 14px;
+            }
+
+            .logout-btn {
+                width: auto;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+                padding: 8px 12px;
+                margin: 5px;
+            }
+
+            #metrics {
+                font-size: 14px;
+            }
+
+            .setpoint-row {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                gap: 10px;
+            }
+
+            .setpoint-row label {
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .setpoint-row input,
+            .setpoint-row button {
+                width: auto;
+                flex-grow: 1;
+                margin: 5px 2px;
+                padding: 8px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding: 8px;
+                margin: 15px auto 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <a href="PID_TEMP.html">Home</a>
+            <a href="Reports.html">Reports</a>
+            <a href="about_us.html">About Us</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <p>Current Temperature: <strong id="temperature">--</strong> °C</p>
+
+        <div class="setpoint-row">
+            <label for="setPointInput">SetPoint (°C):</label>
+            <input type="number" id="setPointInput" min="20" max="60">
+        </div>
+
+        <div class="setpoint-row">
+            <label for="kpInput">Kp:</label>
+            <input type="number" id="kpInput" step="0.01">
+        </div>
+
+        <div class="setpoint-row">
+            <label for="kiInput">Ki:</label>
+            <input type="number" id="kiInput" step="0.01">
+        </div>
+
+        <div class="setpoint-row">
+            <label for="kdInput">Kd:</label>
+            <input type="number" id="kdInput" step="0.01">
+        </div>
+
+        <div class="setpoint-row">
+            <button onclick="updateAllParameters()">Update All</button>
+        </div>
+
+        <canvas id="tempChart"></canvas>
+
+        <div>
+            <button onclick="startPlotting()">Start</button>
+            <button onclick="stopPlotting()" style="background-color: red;">Stop</button>
+        </div>
+
+        <div id="metrics"></div>
+    </div>
+
+    <div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+
+    <footer>
+        &copy; 2025 Firdous Rahaman. All rights reserved.
+    </footer>
+
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "OFaixPD3Ig9tXlkVmm0mbByCe0Zr0xtP7v4kLLGz",
+            authDomain: "tempservocontrol.firebaseapp.com",
+            databaseURL: "https://tempservocontrol-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tempservocontrol",
+            storageBucket: "tempservocontrol.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tempData = [];
+        let timeLabels = [];
+        let setPointValue = 45;
+        let seconds = 0;
+        let isPlotting = false;
+        let plotInterval;
+
+        const ctx = document.getElementById("tempChart").getContext("2d");
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: "Temperature (°C)",
+                        data: tempData,
+                        borderColor: "red",
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                    },
+                    {
+                        label: "Set Point",
+                        data: [],
+                        borderColor: "green",
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0,
+                        pointHoverRadius: 0,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Time (s)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Temperature (°C)' },
+                        min: 25,
+                        max: 65
+                    }
+                }
+            }
+        });
+
+        // Continuously update current temperature
+        db.ref("temperature").on("value", (snapshot) => {
+            const temp = snapshot.val();
+            document.getElementById("temperature").innerText = temp;
+        });
+
+        function updateAllParameters() {
+            const newSP = parseFloat(document.getElementById("setPointInput").value);
+            const newKp = parseFloat(document.getElementById("kpInput").value);
+            const newKi = parseFloat(document.getElementById("kiInput").value);
+            const newKd = parseFloat(document.getElementById("kdInput").value);
+
+            if (!isNaN(newSP)) {
+                db.ref("setPoint").set(newSP);
+            }
+            if (!isNaN(newKp)) {
+                db.ref("Kp").set(newKp);
+            }
+            if (!isNaN(newKi)) {
+                db.ref("Ki").set(newKi);
+            }
+            if (!isNaN(newKd)) {
+                db.ref("Kd").set(newKd);
+            }
+        }
+
+        // Auto-load existing values from Firebase
+        db.ref("setPoint").on("value", (snapshot) => {
+            setPointValue = snapshot.val();
+            document.getElementById("setPointInput").value = setPointValue;
+            chart.options.scales.y.max = setPointValue + 20;
+            chart.update();
+        });
+
+        db.ref("Kp").on("value", (snapshot) => {
+            document.getElementById("kpInput").value = snapshot.val();
+        });
+        db.ref("Ki").on("value", (snapshot) => {
+            document.getElementById("kiInput").value = snapshot.val();
+        });
+        db.ref("Kd").on("value", (snapshot) => {
+            document.getElementById("kdInput").value = snapshot.val();
+        });
+
+        function startPlotting() {
+            if (isPlotting) return;
+            isPlotting = true;
+            seconds = 0;
+            tempData = [];
+            timeLabels = [];
+            chart.data.datasets[0].data = tempData;
+            chart.data.datasets[1].data = [];
+            chart.data.labels = timeLabels;
+            chart.update();
+            document.getElementById("metrics").innerHTML = "";
+
+            plotInterval = setInterval(() => {
+                db.ref("temperature").once("value").then((snapshot) => {
+                    const temp = snapshot.val();
+                    if (seconds >= 300) {
+                        stopPlotting();
+                        return;
+                    }
+                    tempData.push(temp);
+                    timeLabels.push(seconds);
+                    chart.data.datasets[1].data.push(setPointValue);
+                    chart.update();
+                    seconds++;
+                });
+            }, 1000);
+        }
+
+        function stopPlotting() {
+            clearInterval(plotInterval);
+            isPlotting = false;
+            showMetrics();
+        }
+
+        function showMetrics() {
+            if (tempData.length < 5) return;
+            const sp = setPointValue;
+            const tolerance = sp * 0.02;
+            const peak = Math.max(...tempData);
+            const steadyState = tempData[tempData.length - 1];
+
+            let riseStart = -1, riseEnd = -1, settlingTime = -1;
+            const tenPercent = sp * 0.1;
+            const ninetyPercent = sp * 0.9;
+
+            for (let i = 0; i < tempData.length; i++) {
+                if (riseStart === -1 && tempData[i] >= tenPercent) riseStart = i;
+                if (riseEnd === -1 && tempData[i] >= ninetyPercent) {
+                    riseEnd = i;
+                    break;
+                }
+            }
+
+            for (let i = tempData.length - 1; i >= 0; i--) {
+                const segment = tempData.slice(i);
+                if (segment.every(val => Math.abs(val - sp) <= tolerance)) {
+                    settlingTime = i;
+                }
+            }
+
+            const riseTime = (riseStart !== -1 && riseEnd !== -1) ? (riseEnd - riseStart) + " s" : "N/A";
+            const overshoot = peak > sp ? ((peak - sp) / sp * 100).toFixed(2) + "%" : "0%";
+            const error = (steadyState - sp).toFixed(2);
+
+            document.getElementById("metrics").innerHTML = `
+            <strong>📊 System Metrics:</strong><br>
+            ➤ Rise Time: ${riseTime}<br>
+            ➤ Peak Overshoot: ${overshoot}<br>
+            ➤ Settling Time: ${settlingTime !== -1 ? settlingTime + " s" : "N/A"}<br>
+            ➤ Steady-State Error: ${error}°C
+        `;
+        }
+
+        function logout() {
+            window.location.href = "login.html";
+        }
+    </script>
+
+</body>
+
+</html>

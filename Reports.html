@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Control System Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Removed overflow: hidden to allow scrolling */
+        }
+
+        header {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 100%;
+            margin: 10px auto;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #0056b3;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            width: 95%;
+            margin: auto;
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        p, ul {
+            margin: 10px 0;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 95%;
+            max-width: 100%;
+            margin: 20px auto 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            nav a {
+                margin: 5px;
+                font-size: 14px;
+            }
+
+            .logout-btn {
+                width: auto;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            ul {
+                padding-left: 20px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding: 8px;
+                margin: 15px auto 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="PID_TEMP.html">Home</a>
+            <a href="Reports.html">Reports</a>
+            <a href="about_us.html">About Us</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Temperature Control System Report</h1>
+
+        <h2>Introduction</h2>
+        <p>This project implements a temperature control system using an ESP32 microcontroller, integrating a DS18B20 temperature sensor, a servo motor, and an SSR-40 DA solid-state relay. The system employs PID control to maintain a desired temperature (setpoint) by adjusting a heating element (via the relay) and a servo motor’s angle based on real-time temperature data. Data is communicated to a Firebase database for remote monitoring and control.</p>
+
+        <h2>Components</h2>
+        <ul>
+            <li><strong>ESP32 Microcontroller</strong>:
+                <ul>
+                    <li><strong>Description</strong>: A dual-core microcontroller with Wi-Fi and Bluetooth capabilities.</li>
+                    <li><strong>Specifications</strong>: 240 MHz clock speed, 520 KB SRAM, 4 MB flash memory, multiple GPIO pins.</li>
+                    <li><strong>Role</strong>: Central controller, reads temperature, computes PID output, controls relay and servo, interfaces with Firebase.</li>
+                </ul>
+            </li>
+            <li><strong>DS18B20 Temperature Sensor</strong>:
+                <ul>
+                    <li><strong>Description</strong>: A digital temperature sensor with a 1-Wire interface.</li>
+                    <li><strong>Specifications</strong>: Measures -55°C to +125°C, ±0.5°C accuracy (-10°C to +85°C), 12-bit resolution.</li>
+                    <li><strong>Role</strong>: Connected to GPIO 4, provides accurate temperature readings for PID calculations.</li>
+                </ul>
+            </li>
+            <li><strong>Servo Motor</strong>:
+                <ul>
+                    <li><strong>Description</strong>: A rotary actuator for precise angular positioning.</li>
+                    <li><strong>Specifications</strong>: Operates at 4.8–6V, 0–180° range (assumed SG90 or similar).</li>
+                    <li><strong>Role</strong>: Connected to GPIO 23, adjusts angle (15° to 165°) based on temperature, possibly controlling a valve or damper.</li>
+                </ul>
+            </li>
+            <li><strong>SSR-40 DA Solid-State Relay</strong>:
+                <ul>
+                    <li><strong>Description</strong>: A solid-state relay for switching high-power AC loads.</li>
+                    <li><strong>Specifications</strong>: 24–380V AC output, 40A max current, 3–32V DC input control.</li>
+                    <li><strong>Role</strong>: Connected to GPIO 25, toggles a heating element based on PID output.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>System Operation</h2>
+        <ul>
+            <li><strong>Temperature Sensing</strong>: The DS18B20 reads temperature every 500ms.</li>
+            <li><strong>PID Control</strong>: The ESP32 uses PID (Kp=2.0, Ki=4.0, Kd=2.0) to compute output based on temperature vs. setpoint (default 45°C).</li>
+            <li><strong>Relay Control</strong>: The SSR-40 DA relay turns the heating element ON (PID output > 128) or OFF.</li>
+            <li><strong>Servo Control</strong>: Servo angle is mapped based on temperature:
+                <ul>
+                    <li>≤25°C: 15°</li>
+                    <li>25°C to setpoint: 15° to 90°</li>
+                    <li>Setpoint to setpoint+20°C: 90° to 165°</li>
+                    <li>>Setpoint+20°C: 165°</li>
+                </ul>
+            </li>
+            <li><strong>Firebase Integration</strong>: The ESP32 uploads temperature/setpoint data and retrieves setpoint updates from Firebase.</li>
+            <li><strong>Monitoring</strong>: A web interface (e.g., PID_TEMP.html) enables real-time monitoring and control.</li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <p>This temperature control system demonstrates robust hardware-software integration for precise temperature regulation, suitable for industrial heating, HVAC, or home automation. Future enhancements could include additional sensors or advanced PID tuning.</p>
+    </div>
+
+    <div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+    <footer>
+        &copy; 2025 Firdous Rahaman. All rights reserved.
+    </footer>
+
+
+    <script>
+        function logout() {
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>

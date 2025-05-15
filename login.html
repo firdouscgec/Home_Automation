@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Temperature Control</title>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #e0e7ff, #f2f2f2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            position: relative;
+            margin: 15px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        input.invalid {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s;
+            position: relative;
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            display: none;
+            border: 2px solid #fff;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        button.loading .loader {
+            display: block;
+        }
+
+        button.loading span {
+            visibility: hidden;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        .error.shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <div class="input-group">
+            <input type="text" id="userid" placeholder="User ID" oninput="validateInputs()">
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" oninput="validateInputs()">
+            <span class="password-toggle" onclick="togglePassword()">Show</span>
+        </div>
+        <button id="login-btn" onclick="login()">
+            <span>Login</span>
+            <div class="loader"></div>
+        </button>
+        <p class="error" id="error-msg"></p>
+    </div>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "OFaixPD3Ig9tXlkVmm0mbByCe0Zr0xtP7v4kLLGz",
+            authDomain: "tempservocontrol.firebaseapp.com",
+            databaseURL: "https://tempservocontrol-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "tempservocontrol",
+            storageBucket: "tempservocontrol.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function validateInputs() {
+            const userInput = document.getElementById("userid");
+            const passInput = document.getElementById("password");
+            const errorMsg = document.getElementById("error-msg");
+
+            userInput.classList.toggle("invalid", !userInput.value.trim());
+            passInput.classList.toggle("invalid", !passInput.value);
+            errorMsg.innerText = "";
+            errorMsg.classList.remove("shake");
+        }
+
+        function togglePassword() {
+            const passInput = document.getElementById("password");
+            const toggleBtn = document.querySelector(".password-toggle");
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                toggleBtn.innerText = "Hide";
+            } else {
+                passInput.type = "password";
+                toggleBtn.innerText = "Show";
+            }
+        }
+
+        function login() {
+            const user = document.getElementById("userid").value.trim();
+            const pass = document.getElementById("password").value;
+            const errorMsg = document.getElementById("error-msg");
+            const loginBtn = document.getElementById("login-btn");
+
+            if (!user || !pass) {
+                errorMsg.innerText = "Please enter both User ID and Password!";
+                errorMsg.classList.add("shake");
+                validateInputs();
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.classList.add("loading");
+
+            // Fetch the only allowed user from Firebase
+            db.ref("users/" + user).once("value")
+                .then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData && userData.password === pass) {
+                        window.location.href = "PID_TEMP.html"; // Redirect after successful login
+                    } else {
+                        errorMsg.innerText = "Invalid User ID or Password!";
+                        errorMsg.classList.add("shake");
+                        validateInputs();
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    errorMsg.innerText = "Login failed. Please try again.";
+                    errorMsg.classList.add("shake");
+                })
+                .finally(() => {
+                    loginBtn.disabled = false;
+                    loginBtn.classList.remove("loading");
+                });
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !document.getElementById("login-btn").disabled) {
+                login();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

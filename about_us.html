@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Temperature Control Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            text-align: center;
+            padding: 15px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 100%;
+            margin: 10px auto;
+        }
+
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #0056b3;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            width: 95%;
+            margin: auto;
+            flex: 1;
+            text-align: left;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        p, ul {
+            margin: 10px 0;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            width: 95%;
+            max-width: 100%;
+            margin: 20px auto 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            nav a {
+                margin: 5px;
+                font-size: 14px;
+            }
+
+            .logout-btn {
+                width: auto;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+
+            ul {
+                padding-left: 20px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding: 8px;
+                margin: 15px auto 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="PID_TEMP.html">Home</a>
+            <a href="Reports.html">Reports</a>
+            <a href="about_us.html">About Us</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>About Us - Temperature Control Project</h1>
+
+        <h2>Temperature Control System using ESP32</h2>
+        <p>This project is a smart temperature control system built with an ESP32 microcontroller. It uses a DS18B20 digital temperature sensor to continuously monitor the environment.</p>
+
+        <p>Based on the measured temperature, a servo motor is controlled dynamically, and a relay is triggered to manage external devices (like heaters or fans). The system uses a PID (Proportional-Integral-Derivative) algorithm to maintain the temperature near a desired setpoint.</p>
+
+        <p>All data — including live temperature, setpoint, and PID parameters (Kp, Ki, Kd) — are synced in real-time to <strong>Google Firebase</strong>, and users can adjust these parameters remotely through a custom Android application built using <strong>MIT App Inventor</strong> or a web interface.</p>
+
+        <h2>Project Features</h2>
+        <ul>
+            <li>Real-time temperature monitoring</li>
+            <li>Dynamic PID parameter adjustment</li>
+            <li>Cloud connectivity with Firebase</li>
+            <li>Relay control based on PID output</li>
+            <li>Servo motor angle mapping based on temperature</li>
+            <li>Mobile and web app control</li>
+        </ul>
+
+        <h2>Developed By</h2>
+        <p><strong>Firdous Rahaman</strong><br>
+        Engineering Student, Electronics and Communication Department<br>
+        Passionate about IoT, Automation, and Embedded Systems.</p>
+    </div>
+    <div>
+        <button class="logout-btn" onclick="logout()">Log Out</button>
+    </div>
+
+    <footer>
+        This app is created by Firdous Rahaman
+    </footer>
+
+    <script>
+        function logout() {
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>
