@@ -127,9 +127,9 @@ input:disabled {
 canvas {
     margin-top: 20px;
     width: 100% !important;
-    height: 30vh !important;
+    height: 60vh !important;
     border-radius: 10px;
-    background: rgba(42, 42, 62, 0.5);
+    background: white;
 }
 
 #metrics {
@@ -226,7 +226,7 @@ footer {
     }
 
     canvas {
-        height: 25vh !important;
+        height: 50vh !important;
     }
 
     .setpoint-row {
@@ -289,7 +289,7 @@ footer {
     }
 
     canvas {
-        height: 22vh !important;
+        height: 44vh !important;
     }
 
     .setpoint-row input,
