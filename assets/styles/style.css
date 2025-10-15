@@ -1,188 +1,300 @@
-        body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
-            text-align: center;
-            padding: 15px;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            /* Removed overflow: hidden to allow scrolling */
-        }
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+    background-attachment: fixed;
+    color: #e0e0e0;
+    text-align: center;
+    padding: 15px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-        header {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 95%;
-            max-width: 100%;
-            margin: 10px auto;
-        }
+header {
+    background: rgba(42, 42, 62, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    max-width: 100%;
+    margin: 10px auto;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-        nav a {
-            margin: 0 15px;
-            text-decoration: none;
-            color: #007bff;
-            font-size: 16px;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #2575fc;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
 
-        nav a:hover {
-            color: #0056b3;
-        }
+nav a:hover {
+    background: rgba(37, 117, 252, 0.2);
+    color: #6a11cb;
+    transform: translateY(-2px);
+}
 
-        .logout-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+.logout-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
 
-        .logout-btn:hover {
-            background: #c82333;
-        }
+.logout-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #dc3545 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(200, 35, 51, 0.4);
+}
 
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-            width: 95%;
-            margin: auto;
-            flex: 1;
-        }
+.container {
+    background: rgba(30, 30, 46, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 100%;
+    width: 95%;
+    margin: auto;
+    flex: 1;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-        input,
-        button {
-            font-size: 16px;
-            padding: 8px 12px;
-            margin: 5px;
-        }
+input,
+button {
+    font-size: 16px;
+    padding: 10px 16px;
+    margin: 5px;
+    border-radius: 8px;
+}
 
-        button {
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+input {
+    background: rgba(42, 42, 62, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
 
-        button:hover:not(:disabled) {
-            background: #218838;
-        }
+input:focus {
+    outline: none;
+    border-color: #2575fc;
+    box-shadow: 0 0 10px rgba(37, 117, 252, 0.3);
+}
 
-        input:disabled {
-            background: #e9ecef;
-            color: #6c757d;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+button {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
 
-        canvas {
-            margin-top: 20px;
-            width: 100% !important;
-            height: 30vh !important;
-        }
+button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(32, 201, 151, 0.4);
+}
 
-        #metrics {
-            margin-top: 20px;
-            font-size: 16px;
-            text-align: left;
-        }
+button:disabled {
+    background: #444;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.6;
+}
 
-        footer {
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            width: 95%;
-            max-width: 100%;
-            margin: 20px auto 10px;
-            text-align: center;
-            font-size: 14px;
-            color: #333;
-        }
+input:disabled {
+    background: rgba(42, 42, 62, 0.5);
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 
-        .setpoint-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 10px 0;
-        }
+canvas {
+    margin-top: 20px;
+    width: 100% !important;
+    height: 30vh !important;
+    border-radius: 10px;
+    background: rgba(42, 42, 62, 0.5);
+}
 
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
+#metrics {
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: left;
+    padding: 15px;
+    background: rgba(42, 42, 62, 0.5);
+    border-radius: 10px;
+    border-left: 4px solid #2575fc;
+}
 
-            header {
-                flex-direction: column;
-                gap: 10px;
-                padding: 10px;
-                margin-bottom: 15px;
-            }
+footer {
+    background: rgba(42, 42, 62, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    margin-top: 20px;
+    width: 95%;
+    max-width: 100%;
+    margin: 20px auto 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #c0c0d8;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-            nav a {
-                margin: 5px;
-                font-size: 14px;
-            }
+.setpoint-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 10px 0;
+}
 
-            .logout-btn {
-                width: auto;
-                padding: 8px 12px;
-                font-size: 14px;
-            }
+.setpoint-row label {
+    color: #e0e0e0;
+    font-weight: 500;
+}
 
-            .container {
-                padding: 15px;
-            }
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
 
-            input,
-            button {
-                font-size: 14px;
-                padding: 8px 12px;
-                margin: 5px;
-            }
+    header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
 
-            #metrics {
-                font-size: 14px;
-            }
+    nav {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 5px;
+        width: 100%;
+        padding: 5px 0;
+    }
 
-            .setpoint-row {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                gap: 10px;
-            }
+    nav a {
+        margin: 0 5px;
+        font-size: 14px;
+        padding: 6px 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
 
-            .setpoint-row label {
-                font-size: 14px;
-                white-space: nowrap;
-            }
+    .logout-btn {
+        width: 100%;
+        padding: 10px 16px;
+        font-size: 14px;
+    }
 
-            .setpoint-row input,
-            .setpoint-row button {
-                width: auto;
-                flex-grow: 1;
-                margin: 5px 2px;
-                padding: 8px;
-            }
+    .container {
+        padding: 15px;
+        width: 95%;
+    }
 
-            footer {
-                font-size: 12px;
-                padding: 8px;
-                margin: 15px auto 8px;
-            }
-        }
+    input,
+    button {
+        font-size: 14px;
+        padding: 10px 14px;
+        margin: 5px;
+    }
+
+    #metrics {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    canvas {
+        height: 25vh !important;
+    }
+
+    .setpoint-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .setpoint-row label {
+        font-size: 14px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .setpoint-row input,
+    .setpoint-row button {
+        width: auto;
+        flex: 1;
+        min-width: 100px;
+        margin: 5px;
+        padding: 10px;
+    }
+
+    footer {
+        font-size: 12px;
+        padding: 10px;
+        margin: 15px auto 8px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+
+    header {
+        padding: 12px;
+    }
+
+    nav a {
+        font-size: 13px;
+        padding: 5px 10px;
+    }
+
+    .logout-btn {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+
+    .container {
+        padding: 12px;
+    }
+
+    input,
+    button {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    canvas {
+        height: 22vh !important;
+    }
+
+    .setpoint-row input,
+    .setpoint-row button {
+        min-width: 80px;
+        padding: 8px;
+    }
+}
