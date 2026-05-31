@@ -1,275 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Firdous Rahaman</title>
+<meta http-equiv="refresh" content="1;url=https://firdous-rahaman.vercel.app/"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  :root {
+    --cyan: #00f5ff;
+    --purple: #a855f7;
+    --bg: #020408;
+  }
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #e0e7ff, #f2f2f2);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    overflow: hidden;
+    font-family: 'Space Grotesk', sans-serif;
+  }
 
-        .login-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            width: 100%;
-            max-width: 350px;
-            animation: fadeIn 0.5s ease-in;
-        }
+  /* ── CANVAS PARTICLES ── */
+  canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
+  /* ── CENTER STAGE ── */
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+  /* ── RING ── */
+  .ring-wrap {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin-bottom: 40px;
+    animation: floatY 3s ease-in-out infinite;
+  }
 
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
+  @keyframes floatY {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
 
-        .input-group {
-            position: relative;
-            margin: 15px 0;
-        }
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+  }
 
-        input {
-            width: 100%;
-            padding: 12px 40px 12px 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            box-sizing: border-box;
-        }
+  .ring-1 {
+    border-top-color: var(--cyan);
+    border-right-color: var(--cyan);
+    animation: spin1 1.6s linear infinite;
+  }
+  .ring-2 {
+    inset: 14px;
+    border-bottom-color: var(--purple);
+    border-left-color: var(--purple);
+    animation: spin2 2.2s linear infinite;
+  }
+  .ring-3 {
+    inset: 28px;
+    border-top-color: rgba(0,245,255,0.4);
+    border-right-color: rgba(168,85,247,0.4);
+    animation: spin1 3s linear infinite reverse;
+  }
 
-        input:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-            outline: none;
-        }
+  @keyframes spin1 { to { transform: rotate(360deg); } }
+  @keyframes spin2 { to { transform: rotate(-360deg); } }
 
-        input.invalid {
-            border-color: #dc3545;
-            background: #fff5f5;
-        }
+  .avatar {
+    position: absolute;
+    inset: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0,245,255,0.15), rgba(168,85,247,0.15));
+    border: 1px solid rgba(0,245,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
 
-        .password-toggle {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #666;
-            font-size: 14px;
-        }
+  /* ── NAME ── */
+  .name-wrap {
+    text-align: center;
+    overflow: hidden;
+  }
 
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background 0.3s, transform 0.2s;
-            position: relative;
-        }
+  .name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 10vw, 88px);
+    letter-spacing: 6px;
+    line-height: 1;
+    background: linear-gradient(90deg, var(--cyan) 0%, #fff 40%, var(--purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: slideUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+  }
 
-        button:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-        }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-        button:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
+  .tagline {
+    margin-top: 10px;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    animation: slideUp 0.7s 0.15s cubic-bezier(0.22,1,0.36,1) both;
+  }
 
-        .loader {
-            display: none;
-            border: 2px solid #fff;
-            border-top: 2px solid #007bff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-        }
+  .tagline span {
+    color: var(--cyan);
+    opacity: 0.7;
+  }
 
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
+  /* ── DIVIDER ── */
+  .divider {
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+    margin: 28px 0;
+    animation: expandW 0.8s 0.3s ease forwards;
+  }
+  @keyframes expandW { to { width: 280px; } }
 
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
+  /* ── REDIRECT TEXT ── */
+  .redirect-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 2px;
+    animation: fadeIn 0.5s 0.5s ease both;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        button.loading .loader {
-            display: block;
-        }
+  /* ── PROGRESS BAR ── */
+  .bar-track {
+    width: 220px;
+    height: 2px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 99px;
+    margin-top: 16px;
+    overflow: hidden;
+    animation: fadeIn 0.5s 0.5s ease both;
+  }
 
-        button.loading span {
-            visibility: hidden;
-        }
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    border-radius: 99px;
+    animation: fillBar 1s 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+    box-shadow: 0 0 12px var(--cyan);
+  }
+  @keyframes fillBar { to { width: 100%; } }
 
-        .error {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 10px;
-            min-height: 20px;
-        }
+  /* ── GLOW ORBS ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  .orb-1 {
+    width: 400px; height: 400px;
+    background: rgba(0,245,255,0.06);
+    top: -100px; left: -100px;
+  }
+  .orb-2 {
+    width: 500px; height: 500px;
+    background: rgba(168,85,247,0.07);
+    bottom: -150px; right: -100px;
+    animation-delay: 2s;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 0.7; }
+    50%      { transform: scale(1.1); opacity: 1; }
+  }
 
-        .error.shake {
-            animation: shake 0.3s;
-        }
+  /* ── CORNER DECOR ── */
+  .corner {
+    position: fixed;
+    width: 60px; height: 60px;
+    z-index: 5;
+    opacity: 0.25;
+  }
+  .corner::before, .corner::after {
+    content: '';
+    position: absolute;
+    background: var(--cyan);
+  }
+  .corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+  .corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
 
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            75% {
-                transform: translateX(5px);
-            }
-        }
-    </style>
+  .c-tl { top: 24px; left: 24px; }
+  .c-tr { top: 24px; right: 24px; transform: scaleX(-1); }
+  .c-bl { bottom: 24px; left: 24px; transform: scaleY(-1); }
+  .c-br { bottom: 24px; right: 24px; transform: scale(-1); }
+</style>
 </head>
-
 <body>
 
-    <div class="login-container">
-        <h2>Login</h2>
-        <div class="input-group">
-            <input type="text" id="userid" placeholder="User ID" oninput="validateInputs()">
-        </div>
-        <div class="input-group">
-            <input type="password" id="password" placeholder="Password" oninput="validateInputs()">
-            <span class="password-toggle" onclick="togglePassword()">Show</span>
-        </div>
-        <button id="login-btn" onclick="login()">
-            <span>Login</span>
-            <div class="loader"></div>
-        </button>
-        <p class="error" id="error-msg"></p>
-    </div>
+<!-- particles -->
+<canvas id="c"></canvas>
 
-    <script>
-        // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "OFaixPD3Ig9tXlkVmm0mbByCe0Zr0xtP7v4kLLGz",
-            authDomain: "tempservocontrol.firebaseapp.com",
-            databaseURL: "https://tempservocontrol-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "tempservocontrol",
-            storageBucket: "tempservocontrol.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+<!-- glow orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-        function validateInputs() {
-            const userInput = document.getElementById("userid");
-            const passInput = document.getElementById("password");
-            const errorMsg = document.getElementById("error-msg");
+<!-- corner brackets -->
+<div class="corner c-tl"></div>
+<div class="corner c-tr"></div>
+<div class="corner c-bl"></div>
+<div class="corner c-br"></div>
 
-            userInput.classList.toggle("invalid", !userInput.value.trim());
-            passInput.classList.toggle("invalid", !passInput.value);
-            errorMsg.innerText = "";
-            errorMsg.classList.remove("shake");
+<!-- main content -->
+<div class="stage">
+  <div class="ring-wrap">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="avatar">✦</div>
+  </div>
+
+  <div class="name-wrap">
+    <div class="name">Firdous Rahaman</div>
+    <div class="tagline">Developer &nbsp;<span>//</span>&nbsp; IoT &nbsp;<span>//</span>&nbsp; ML Engineer</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="redirect-text">Redirecting to portfolio&hellip;</div>
+  <div class="bar-track">
+    <div class="bar-fill"></div>
+  </div>
+</div>
+
+<script>
+  // ── Particle Canvas ──
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.r  = Math.random() * 1.5 + 0.5;
+      this.a  = Math.random() * 0.5 + 0.1;
+      this.cyan = Math.random() > 0.5;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = this.cyan
+        ? `rgba(0,245,255,${this.a})`
+        : `rgba(168,85,247,${this.a})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  // draw connecting lines between nearby particles
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 90) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0,245,255,${0.06 * (1 - dist/90)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
         }
+      }
+    }
+  }
 
-        function togglePassword() {
-            const passInput = document.getElementById("password");
-            const toggleBtn = document.querySelector(".password-toggle");
-            if (passInput.type === "password") {
-                passInput.type = "text";
-                toggleBtn.innerText = "Hide";
-            } else {
-                passInput.type = "password";
-                toggleBtn.innerText = "Show";
-            }
-        }
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(loop);
+  }
+  loop();
 
-        function login() {
-            const user = document.getElementById("userid").value.trim();
-            const pass = document.getElementById("password").value;
-            const errorMsg = document.getElementById("error-msg");
-            const loginBtn = document.getElementById("login-btn");
-
-            if (!user || !pass) {
-                errorMsg.innerText = "Please enter both User ID and Password!";
-                errorMsg.classList.add("shake");
-                validateInputs();
-                return;
-            }
-
-            loginBtn.disabled = true;
-            loginBtn.classList.add("loading");
-
-            // Fetch the only allowed user from Firebase
-            db.ref("users/" + user).once("value")
-                .then((snapshot) => {
-                    const userData = snapshot.val();
-                    if (userData && userData.password === pass) {
-                        window.location.href = "PID_TEMP.html"; // Redirect after successful login
-                    } else {
-                        errorMsg.innerText = "Invalid User ID or Password!";
-                        errorMsg.classList.add("shake");
-                        validateInputs();
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    errorMsg.innerText = "Login failed. Please try again.";
-                    errorMsg.classList.add("shake");
-                })
-                .finally(() => {
-                    loginBtn.disabled = false;
-                    loginBtn.classList.remove("loading");
-                });
-        }
-
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && !document.getElementById("login-btn").disabled) {
-                login();
-            }
-        });
-    </script>
-
+  // ── Redirect after 1 second ──
+  setTimeout(() => {
+    window.location.href = 'https://firdous-rahaman.vercel.app/';
+  }, 1000);
+</script>
 </body>
-
 </html>
